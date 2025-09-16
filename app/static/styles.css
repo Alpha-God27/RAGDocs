@@ -1,0 +1,89 @@
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+    margin: 0;
+    background: #0f172a;
+    color: #e2e8f0
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px
+}
+
+h1 {
+    margin: 0 0 16px;
+    font-size: 24px
+}
+
+#chat {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    padding: 16px
+}
+
+#messages {
+    max-height: 50vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px
+}
+
+.msg {
+    padding: 10px 12px;
+    border-radius: 8px
+}
+
+.msg.user {
+    background: #1f2937;
+    align-self: flex-end
+}
+
+.msg.assistant {
+    background: #0b3b29
+}
+
+#form {
+    display: flex;
+    gap: 8px
+}
+
+#input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    background: #0b1220;
+    color: #e2e8f0
+}
+
+button {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #e2e8f0;
+    cursor: pointer
+}
+
+.hidden {
+    display: none
+}
+
+#details {
+    margin-top: 16px;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    padding: 16px
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word
+}
+
+/* 
