@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAGDocs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar for a modern look */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      /* light gray track */
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      /* slate-400 thumb */
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+      /* slate-500 thumb */
+    }
+
+    /* Styling for chat messages in the new color scheme */
+    .msg {
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+      line-height: 1.5;
+    }
+
+    .user {
+      background: #007aff;
+      /* A vibrant blue for user messages */
+      color: #ffffff;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .assistant {
+      background: #e5e7eb;
+      /* Light gray for assistant messages */
+      color: #1f2937;
+      /* Dark text for readability */
+      align-self: flex-start;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 font-sans">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-slate-900 text-slate-200 p-5 flex flex-col shrink-0 shadow-2xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="text-4xl">🔗</div>
+        <div>
+          <h1 class="text-xl font-bold">RAGDocs</h1>
+          <p class="text-xs text-slate-400">Links in, answers out.</p>
+        </div>
+      </div>
+
+      <!-- Knowledge Base Section -->
+      <div class="mb-6">
+        <h2 class="text-sm font-semibold text-slate-400 mb-3 px-2">Knowledge Base</h2>
+        <!-- This is the container where indexed URLs will appear -->
+        <div id="documentList" class="text-sm text-slate-300 space-y-2 mb-3">
+          <!-- URL list will be populated here by JavaScript -->
+        </div>
+        <button id="addUrlBtn"
+          class="w-full text-center text-sm p-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+          Add from URL
+        </button>
+      </div>
+
+      <!-- Recent Chats Section -->
+      <div class="flex-grow overflow-y-auto" id="history">
+        <h2 class="text-sm font-semibold text-slate-400 mb-3 px-2">Recent Chats</h2>
+      </div>
+
+      <!-- Settings Footer -->
+      <div class="border-t border-slate-700 pt-4 text-sm text-slate-400">
+        <button id="settingsBtn" class="flex items-center w-full p-2 rounded-lg hover:bg-slate-800 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2.4l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2.4l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+            </path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Settings
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <!-- Chat Messages Container -->
+      <div id="messages" class="flex-grow p-6 flex flex-col overflow-y-auto">
+        <!-- Simplified Welcome Message -->
+        <div class="flex justify-center items-center h-full welcome-message">
+          <div class="text-center text-slate-500 max-w-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              class="mx-auto mb-4">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path>
+            </svg>
+            <h1 class="text-2xl font-bold text-slate-800 mb-2">Knowledge Base is Ready</h1>
+            <p class="mb-6">Click the "Add from URL" button in the sidebar to fetch content from a web page and start asking questions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Form -->
+      <div class="p-6 shrink-0 bg-white/80 backdrop-blur-sm border-t border-slate-200">
+        <form id="form" class="bg-slate-200 rounded-xl p-2 flex items-center">
+          <input id="input" type="text" placeholder="Ask about your data..." autocomplete="off"
+            class="w-full bg-transparent text-slate-900 focus:outline-none px-4" />
+          <button type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-2.5 transition-colors duration-200 disabled:bg-slate-400 disabled:cursor-not-allowed"
+            aria-label="Send message">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m5 12 7-7 7 7" />
+              <path d="M12 19V5" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add URL Modal -->
+  <div id="addUrlModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4 text-slate-800">Add Content from URL</h2>
+      <p class="text-slate-600 mb-6">Provide a descriptive label and the URL to add its content to your knowledge base.</p>
+      
+      <!-- Label Input -->
+      <label for="urlLabelInputModal" class="block text-sm font-medium text-slate-700 mb-2">Label</label>
+      <input type="text" id="urlLabelInputModal" placeholder="e.g., FastAPI Docs"
+          class="w-full border border-slate-300 text-slate-900 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <!-- URL Input -->
+      <label for="urlInputModal" class="block text-sm font-medium text-slate-700 mb-2">Web Page URL</label>
+      <input type="text" id="urlInputModal" placeholder="https://..."
+          class="w-full border border-slate-300 text-slate-900 rounded-lg p-3 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      
+      <div class="flex justify-end gap-3">
+          <button id="cancelUrlBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg">Cancel</button>
+          <button id="fetchUrlBtnModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Fetch & Index</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Key Modal -->
+  <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4 text-slate-800">Enter Your API Key</h2>
+      <p class="text-slate-600 mb-6">This is stored securely in your browser's local storage.</p>
+      <label for="apiKeyInput" class="block text-sm font-medium text-slate-700 mb-2">OpenRouter API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-or-..."
+        class="w-full border border-slate-300 text-slate-900 rounded-lg p-3 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <div class="flex justify-end"><button id="saveApiKeyBtn"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Save</button></div>
+    </div>
+  </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('form');
+      const input = document.getElementById('input');
+      const messages = document.getElementById('messages');
+      const welcomeMessage = document.querySelector('.welcome-message');
+      const documentList = document.getElementById('documentList');
+
+      // API Key Modal elements
+      const apiKeyModal = document.getElementById('apiKeyModal');
+      const apiKeyInput = document.getElementById('apiKeyInput');
+      const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+      const settingsBtn = document.getElementById('settingsBtn');
+
+      // Add URL Modal elements
+      const addUrlModal = document.getElementById('addUrlModal');
+      const addUrlBtn = document.getElementById('addUrlBtn');
+      const urlLabelInputModal = document.getElementById('urlLabelInputModal');
+      const urlInputModal = document.getElementById('urlInputModal');
+      const fetchUrlBtnModal = document.getElementById('fetchUrlBtnModal');
+      const cancelUrlBtn = document.getElementById('cancelUrlBtn');
+
+      // --- NEW: Document Selection Logic ---
+      function handleDocSelection(selectedItem) {
+        // Get all document items in the list
+        const allDocs = document.querySelectorAll('.doc-item');
+        
+        // First, deselect all of them
+        allDocs.forEach(doc => {
+          doc.classList.remove('bg-slate-700', 'font-semibold'); // Remove highlight
+          doc.querySelector('.checkmark').classList.add('hidden'); // Hide checkmark
+        });
+
+        // Now, select the clicked one
+        selectedItem.classList.add('bg-slate-700', 'font-semibold'); // Add highlight
+        selectedItem.querySelector('.checkmark').classList.remove('hidden'); // Show checkmark
+      }
+
+      // --- UPDATED: URL Indexing Logic ---
+      async function handleUrlIndexing() {
+          const label = urlLabelInputModal.value.trim();
+          const url = urlInputModal.value.trim();
+          const button = fetchUrlBtnModal;
+
+          if (!label || !url) {
+              alert('Please enter both a Label and a URL.');
+              return;
+          }
+
+          const originalText = button.textContent;
+          button.disabled = true;
+          button.textContent = 'Fetching...';
+
+          try {
+              await new Promise(resolve => setTimeout(resolve, 1500));
+
+              const listItem = document.createElement('div');
+              // Add 'doc-item' class for selection handling
+              listItem.className = 'doc-item p-2 rounded-md hover:bg-slate-800 cursor-pointer flex items-center justify-between';
+              
+              // Added a container for the label and icon, and a separate checkmark icon
+              listItem.innerHTML = `
+                  <div class="flex items-center gap-2 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
+                    <span class="truncate" title="${url}">${label}</span>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="checkmark hidden shrink-0 text-green-400"><path d="M20 6 9 17l-5-5"></path></svg>
+              `;
+              
+              // Add click listener to handle selection
+              listItem.addEventListener('click', () => handleDocSelection(listItem));
+              
+              documentList.appendChild(listItem);
+
+              // Automatically select the first document added, or the newest one
+              handleDocSelection(listItem);
+              
+              alert(`Successfully indexed: ${label}`);
+              
+              urlLabelInputModal.value = '';
+              urlInputModal.value = '';
+              addUrlModal.classList.add('hidden');
+
+          } catch (error) {
+              alert(`Error: ${error.message}`);
+          } finally {
+              button.disabled = false;
+              button.textContent = originalText;
+          }
+      }
+
+      // --- Event listeners (Unchanged but included for completeness) ---
+      fetchUrlBtnModal.addEventListener('click', handleUrlIndexing);
+      addUrlBtn.addEventListener('click', () => addUrlModal.classList.remove('hidden'));
+      cancelUrlBtn.addEventListener('click', () => addUrlModal.classList.add('hidden'));
+
+      // --- API Key Logic (Unchanged) ---
+      function checkApiKey() {
+          if (!localStorage.getItem('openRouterApiKey')) {
+              apiKeyModal.classList.remove('hidden');
+          }
+      }
+      function saveApiKey() {
+          const key = apiKeyInput.value.trim();
+          if (key) {
+              localStorage.setItem('openRouterApiKey', key);
+              apiKeyModal.classList.add('hidden');
+          } else {
+              alert('Please enter a valid API key.');
+          }
+      }
+      saveApiKeyBtn.addEventListener('click', saveApiKey);
+      settingsBtn.addEventListener('click', () => {
+          apiKeyInput.value = localStorage.getItem('openRouterApiKey') || '';
+          apiKeyModal.classList.remove('hidden');
+      });
+      checkApiKey();
+
+      // --- Chat Logic (Unchanged) ---
+      function addMessage(role, text) {
+          if (welcomeMessage && !welcomeMessage.classList.contains('hidden')) {
+              welcomeMessage.classList.add('hidden');
+          }
+          const el = document.createElement('div');
+          el.className = `msg ${role}`;
+          el.textContent = text;
+          messages.appendChild(el);
+          messages.scrollTop = messages.scrollHeight;
+      }
+
+      form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const question = input.value.trim();
+
+          if (!localStorage.getItem('openRouterApiKey')) {
+              alert('Please set your OpenRouter API key in Settings before starting a chat.');
+              checkApiKey();
+              return;
+          }
+          if (!question) return;
+
+          addMessage('user', question);
+          input.value = '';
+          addMessage('assistant', 'Thinking...');
+      });
+    });
+  </script>
+</body>
+</html>
+
