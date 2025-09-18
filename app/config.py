@@ -1,4 +1,4 @@
-"""Configurations used in the application"""
+"""Configurations used in the RAGDocs application"""
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
@@ -8,20 +8,33 @@ import os
 load_dotenv()
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///app/data/northwind_small.sqlite"
-
 class Settings(BaseSettings):
-    app_name: str = Field(default="DBmind")
+    app_name: str = Field(default="RAGDocs")
     debug: bool = Field(default=True)
-
-    # Database
-    sqlite_path: str = Field(default="./data/db.sqlite3")
-
-    # Ollama
-    ollama_base_url: str = Field(default="http://localhost:11434")
-    ollama_model: str = Field(default="llama3")
-    ollama_timeout_seconds: int = Field(default=120)
-
+    
+    # OpenRouter Configuration
+    openrouter_api_url: str = Field(default="https://openrouter.ai/api/v1")
+    openrouter_timeout: int = Field(default=60)
+    
+    # Embedding Model Configuration
+    # Using BAAI/bge-base-en-v1.5 for high-quality embeddings
+    embedding_model: str = Field(default="BAAI/bge-base-en-v1.5")
+    
+    # LLM Model Configuration
+    default_llm_model: str = Field(default="openai/gpt-3.5-turbo")
+    
+    # RAG Configuration
+    chunk_size: int = Field(default=1000)
+    chunk_overlap: int = Field(default=200)
+    max_retrieve_docs: int = Field(default=4)
+    
+    # Vector Database Configuration
+    vector_store_path: str = Field(default="./app/data/vector_store")
+    
+    # Web Scraping Configuration
+    request_timeout: int = Field(default=30)
+    max_content_length: int = Field(default=1000000)  # 1MB limit
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

@@ -1,17 +1,3 @@
-from app.schemas.schemas import (
-    ValidateKeyResponse,
-    IndexUrlRequest,
-    IndexUrlResponse,
-    DocsListResponse,
-    AskRequest,
-    AskResponse,
-)
+"""Pydantic schemas package for RAGDocs."""
 
-__all__ = [
-    "ValidateKeyResponse",
-    "IndexUrlRequest",
-    "IndexUrlResponse",
-    "DocsListResponse",
-    "AskRequest",
-    "AskResponse",
-]
+from .schemas import *

@@ -1,328 +1,298 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RAGDocs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom scrollbar for a modern look */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #e2e8f0;
-      /* light gray track */
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #94a3b8;
-      /* slate-400 thumb */
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #64748b;
-      /* slate-500 thumb */
-    }
-
-    /* Styling for chat messages in the new color scheme */
-    .msg {
-      padding: 10px 14px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-      line-height: 1.5;
-    }
-
-    .user {
-      background: #007aff;
-      /* A vibrant blue for user messages */
-      color: #ffffff;
-      align-self: flex-end;
-      margin-left: auto;
-    }
-
-    .assistant {
-      background: #e5e7eb;
-      /* Light gray for assistant messages */
-      color: #1f2937;
-      /* Dark text for readability */
-      align-self: flex-start;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAGDocs - Intelligent Document Query System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Chat message styling */
+        .message {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            margin-left: auto;
+            max-width: 80%;
+        }
+        
+        .assistant-message {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            margin-right: auto;
+            max-width: 85%;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '.';
+            animation: dots 1.5s infinite step-start;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+        
+        /* Document item styling */
+        .document-item {
+            transition: all 0.2s ease;
+        }
+        
+        .document-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .document-item.selected {
+            background: linear-gradient(135deg, #1e40af, #3730a3);
+            color: white;
+        }
+    </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800 font-sans">
-  <div class="flex h-screen">
-    <!-- Sidebar -->
-    <aside class="w-72 bg-slate-900 text-slate-200 p-5 flex flex-col shrink-0 shadow-2xl">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="text-4xl">🔗</div>
-        <div>
-          <h1 class="text-xl font-bold">RAGDocs</h1>
-          <p class="text-xs text-slate-400">Links in, answers out.</p>
-        </div>
-      </div>
-
-      <!-- Knowledge Base Section -->
-      <div class="mb-6">
-        <h2 class="text-sm font-semibold text-slate-400 mb-3 px-2">Knowledge Base</h2>
-        <!-- This is the container where indexed URLs will appear -->
-        <div id="documentList" class="text-sm text-slate-300 space-y-2 mb-3">
-          <!-- URL list will be populated here by JavaScript -->
-        </div>
-        <button id="addUrlBtn"
-          class="w-full text-center text-sm p-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
-          Add from URL
-        </button>
-      </div>
-
-      <!-- Recent Chats Section -->
-      <div class="flex-grow overflow-y-auto" id="history">
-        <h2 class="text-sm font-semibold text-slate-400 mb-3 px-2">Recent Chats</h2>
-      </div>
-
-      <!-- Settings Footer -->
-      <div class="border-t border-slate-700 pt-4 text-sm text-slate-400">
-        <button id="settingsBtn" class="flex items-center w-full p-2 rounded-lg hover:bg-slate-800 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
-            <path
-              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2.4l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2.4l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
-            </path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          Settings
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col overflow-hidden">
-      <!-- Chat Messages Container -->
-      <div id="messages" class="flex-grow p-6 flex flex-col overflow-y-auto">
-        <!-- Simplified Welcome Message -->
-        <div class="flex justify-center items-center h-full welcome-message">
-          <div class="text-center text-slate-500 max-w-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-              class="mx-auto mb-4">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path>
-            </svg>
-            <h1 class="text-2xl font-bold text-slate-800 mb-2">Knowledge Base is Ready</h1>
-            <p class="mb-6">Click the "Add from URL" button in the sidebar to fetch content from a web page and start asking questions.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chat Input Form -->
-      <div class="p-6 shrink-0 bg-white/80 backdrop-blur-sm border-t border-slate-200">
-        <form id="form" class="bg-slate-200 rounded-xl p-2 flex items-center">
-          <input id="input" type="text" placeholder="Ask about your data..." autocomplete="off"
-            class="w-full bg-transparent text-slate-900 focus:outline-none px-4" />
-          <button type="submit"
-            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-2.5 transition-colors duration-200 disabled:bg-slate-400 disabled:cursor-not-allowed"
-            aria-label="Send message">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m5 12 7-7 7 7" />
-              <path d="M12 19V5" />
-            </svg>
-          </button>
-        </form>
-      </div>
-    </main>
-  </div>
-
-  <!-- Add URL Modal -->
-  <div id="addUrlModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-4 text-slate-800">Add Content from URL</h2>
-      <p class="text-slate-600 mb-6">Provide a descriptive label and the URL to add its content to your knowledge base.</p>
-      
-      <!-- Label Input -->
-      <label for="urlLabelInputModal" class="block text-sm font-medium text-slate-700 mb-2">Label</label>
-      <input type="text" id="urlLabelInputModal" placeholder="e.g., FastAPI Docs"
-          class="w-full border border-slate-300 text-slate-900 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-
-      <!-- URL Input -->
-      <label for="urlInputModal" class="block text-sm font-medium text-slate-700 mb-2">Web Page URL</label>
-      <input type="text" id="urlInputModal" placeholder="https://..."
-          class="w-full border border-slate-300 text-slate-900 rounded-lg p-3 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      
-      <div class="flex justify-end gap-3">
-          <button id="cancelUrlBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg">Cancel</button>
-          <button id="fetchUrlBtnModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Fetch & Index</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- API Key Modal -->
-  <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-4 text-slate-800">Enter Your API Key</h2>
-      <p class="text-slate-600 mb-6">This is stored securely in your browser's local storage.</p>
-      <label for="apiKeyInput" class="block text-sm font-medium text-slate-700 mb-2">OpenRouter API Key</label>
-      <input type="password" id="apiKeyInput" placeholder="sk-or-..."
-        class="w-full border border-slate-300 text-slate-900 rounded-lg p-3 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <div class="flex justify-end"><button id="saveApiKeyBtn"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Save</button></div>
-    </div>
-  </div>
-
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('form');
-      const input = document.getElementById('input');
-      const messages = document.getElementById('messages');
-      const welcomeMessage = document.querySelector('.welcome-message');
-      const documentList = document.getElementById('documentList');
-
-      // API Key Modal elements
-      const apiKeyModal = document.getElementById('apiKeyModal');
-      const apiKeyInput = document.getElementById('apiKeyInput');
-      const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
-      const settingsBtn = document.getElementById('settingsBtn');
-
-      // Add URL Modal elements
-      const addUrlModal = document.getElementById('addUrlModal');
-      const addUrlBtn = document.getElementById('addUrlBtn');
-      const urlLabelInputModal = document.getElementById('urlLabelInputModal');
-      const urlInputModal = document.getElementById('urlInputModal');
-      const fetchUrlBtnModal = document.getElementById('fetchUrlBtnModal');
-      const cancelUrlBtn = document.getElementById('cancelUrlBtn');
-
-      // --- NEW: Document Selection Logic ---
-      function handleDocSelection(selectedItem) {
-        // Get all document items in the list
-        const allDocs = document.querySelectorAll('.doc-item');
+<body class="bg-slate-50 text-slate-900 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-80 bg-white border-r border-slate-200 flex flex-col shadow-lg">
+            <!-- Header -->
+            <div class="p-6 border-b border-slate-200">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                        R
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">RAGDocs</h1>
+                        <p class="text-sm text-slate-500">Intelligent document queries</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Key Status -->
+            <div class="px-6 py-4 border-b border-slate-200">
+                <div id="apiKeyStatus" class="flex items-center gap-2 text-sm">
+                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span class="text-slate-600">API key not configured</span>
+                    <button id="configureApiBtn" class="ml-auto text-blue-600 hover:text-blue-700 text-xs font-medium">
+                        Configure
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Documents Section -->
+            <div class="flex-1 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Documents</h2>
+                        <button id="addDocumentBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1.5 rounded-md font-medium transition-colors">
+                            + Add URL
+                        </button>
+                    </div>
+                    
+                    <div id="documentsList" class="space-y-2 overflow-y-auto max-h-96">
+                        <!-- Documents will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="p-6 border-t border-slate-200">
+                <div class="text-xs text-slate-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <span>Documents: <span id="documentsCount">0</span></span>
+                        <button id="clearAllBtn" class="text-red-600 hover:text-red-700 font-medium">Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
         
-        // First, deselect all of them
-        allDocs.forEach(doc => {
-          doc.classList.remove('bg-slate-700', 'font-semibold'); // Remove highlight
-          doc.querySelector('.checkmark').classList.add('hidden'); // Hide checkmark
-        });
-
-        // Now, select the clicked one
-        selectedItem.classList.add('bg-slate-700', 'font-semibold'); // Add highlight
-        selectedItem.querySelector('.checkmark').classList.remove('hidden'); // Show checkmark
-      }
-
-      // --- UPDATED: URL Indexing Logic ---
-      async function handleUrlIndexing() {
-          const label = urlLabelInputModal.value.trim();
-          const url = urlInputModal.value.trim();
-          const button = fetchUrlBtnModal;
-
-          if (!label || !url) {
-              alert('Please enter both a Label and a URL.');
-              return;
-          }
-
-          const originalText = button.textContent;
-          button.disabled = true;
-          button.textContent = 'Fetching...';
-
-          try {
-              await new Promise(resolve => setTimeout(resolve, 1500));
-
-              const listItem = document.createElement('div');
-              // Add 'doc-item' class for selection handling
-              listItem.className = 'doc-item p-2 rounded-md hover:bg-slate-800 cursor-pointer flex items-center justify-between';
-              
-              // Added a container for the label and icon, and a separate checkmark icon
-              listItem.innerHTML = `
-                  <div class="flex items-center gap-2 overflow-hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
-                    <span class="truncate" title="${url}">${label}</span>
-                  </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="checkmark hidden shrink-0 text-green-400"><path d="M20 6 9 17l-5-5"></path></svg>
-              `;
-              
-              // Add click listener to handle selection
-              listItem.addEventListener('click', () => handleDocSelection(listItem));
-              
-              documentList.appendChild(listItem);
-
-              // Automatically select the first document added, or the newest one
-              handleDocSelection(listItem);
-              
-              alert(`Successfully indexed: ${label}`);
-              
-              urlLabelInputModal.value = '';
-              urlInputModal.value = '';
-              addUrlModal.classList.add('hidden');
-
-          } catch (error) {
-              alert(`Error: ${error.message}`);
-          } finally {
-              button.disabled = false;
-              button.textContent = originalText;
-          }
-      }
-
-      // --- Event listeners (Unchanged but included for completeness) ---
-      fetchUrlBtnModal.addEventListener('click', handleUrlIndexing);
-      addUrlBtn.addEventListener('click', () => addUrlModal.classList.remove('hidden'));
-      cancelUrlBtn.addEventListener('click', () => addUrlModal.classList.add('hidden'));
-
-      // --- API Key Logic (Unchanged) ---
-      function checkApiKey() {
-          if (!localStorage.getItem('openRouterApiKey')) {
-              apiKeyModal.classList.remove('hidden');
-          }
-      }
-      function saveApiKey() {
-          const key = apiKeyInput.value.trim();
-          if (key) {
-              localStorage.setItem('openRouterApiKey', key);
-              apiKeyModal.classList.add('hidden');
-          } else {
-              alert('Please enter a valid API key.');
-          }
-      }
-      saveApiKeyBtn.addEventListener('click', saveApiKey);
-      settingsBtn.addEventListener('click', () => {
-          apiKeyInput.value = localStorage.getItem('openRouterApiKey') || '';
-          apiKeyModal.classList.remove('hidden');
-      });
-      checkApiKey();
-
-      // --- Chat Logic (Unchanged) ---
-      function addMessage(role, text) {
-          if (welcomeMessage && !welcomeMessage.classList.contains('hidden')) {
-              welcomeMessage.classList.add('hidden');
-          }
-          const el = document.createElement('div');
-          el.className = `msg ${role}`;
-          el.textContent = text;
-          messages.appendChild(el);
-          messages.scrollTop = messages.scrollHeight;
-      }
-
-      form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const question = input.value.trim();
-
-          if (!localStorage.getItem('openRouterApiKey')) {
-              alert('Please set your OpenRouter API key in Settings before starting a chat.');
-              checkApiKey();
-              return;
-          }
-          if (!question) return;
-
-          addMessage('user', question);
-          input.value = '';
-          addMessage('assistant', 'Thinking...');
-      });
-    });
-  </script>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col">
+            <!-- Chat Messages -->
+            <div id="messagesContainer" class="flex-1 overflow-y-auto p-6">
+                <div id="welcomeScreen" class="h-full flex items-center justify-center">
+                    <div class="text-center max-w-md">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
+                            R
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3">Welcome to RAGDocs</h2>
+                        <p class="text-slate-600 mb-6">Start by configuring your OpenRouter API key and adding some documents to query.</p>
+                        <div class="space-y-3">
+                            <button id="welcomeConfigureBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition-colors">
+                                Configure API Key
+                            </button>
+                            <button id="welcomeAddDocBtn" class="w-full border border-slate-300 hover:bg-slate-50 text-slate-700 py-2 px-4 rounded-md font-medium transition-colors">
+                                Add Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="messagesArea" class="hidden space-y-4">
+                    <!-- Chat messages will appear here -->
+                </div>
+            </div>
+            
+            <!-- Chat Input -->
+            <div class="border-t border-slate-200 p-6">
+                <form id="chatForm" class="flex gap-3">
+                    <input 
+                        id="messageInput" 
+                        type="text" 
+                        placeholder="Ask a question about your documents..." 
+                        class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled
+                    >
+                    <button 
+                        type="submit" 
+                        id="sendButton"
+                        class="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                        disabled
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Configure OpenRouter API Key</h3>
+            <p class="text-sm text-slate-600 mb-4">Enter your OpenRouter API key to enable document querying. Your key is stored securely in your browser.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="apiKeyInput" class="block text-sm font-medium text-slate-700 mb-2">API Key</label>
+                    <input 
+                        type="password" 
+                        id="apiKeyInput" 
+                        placeholder="sk-or-..." 
+                        class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                </div>
+                
+                <div id="apiKeyError" class="hidden text-sm text-red-600"></div>
+                
+                <div class="flex gap-3 justify-end">
+                    <button id="cancelApiKeyBtn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">
+                        Cancel
+                    </button>
+                    <button id="saveApiKeyBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium">
+                        Save & Validate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Document Modal -->
+    <div id="addDocumentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
+            <h3 class="text-lg font-semibold text-slate-900 mb-4">Add Document from URL</h3>
+            <p class="text-sm text-slate-600 mb-4">Enter a URL to scrape and index its content. For documentation sites like FastAPI, Django, etc., enable auto-discovery to find and index related pages automatically.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="documentLabelInput" class="block text-sm font-medium text-slate-700 mb-2">Label</label>
+                    <input 
+                        type="text" 
+                        id="documentLabelInput" 
+                        placeholder="e.g., FastAPI Documentation" 
+                        class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                </div>
+                
+                <div>
+                    <label for="documentUrlInput" class="block text-sm font-medium text-slate-700 mb-2">URL</label>
+                    <input 
+                        type="url" 
+                        id="documentUrlInput" 
+                        placeholder="https://fastapi.tiangolo.com/tutorial/" 
+                        class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                </div>
+                
+                <div>
+                    <label class="flex items-center gap-2 text-sm text-slate-700">
+                        <input 
+                            type="checkbox" 
+                            id="enableCrawlingInput" 
+                            checked
+                            class="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                        >
+                        <span>Auto-discover related pages (recommended for documentation sites)</span>
+                    </label>
+                    <p class="text-xs text-slate-500 mt-1">When enabled, the system will find and index related documentation pages automatically.</p>
+                </div>
+                
+                <div id="crawlingOptions" class="">
+                    <label for="maxPagesInput" class="block text-sm font-medium text-slate-700 mb-2">Maximum pages to crawl</label>
+                    <select 
+                        id="maxPagesInput" 
+                        class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="5">5 pages</option>
+                        <option value="10" selected>10 pages</option>
+                        <option value="15">15 pages</option>
+                        <option value="20">20 pages</option>
+                        <option value="25">25 pages</option>
+                    </select>
+                    <p class="text-xs text-slate-500 mt-1">Recommended: 10-15 pages for most documentation sites.</p>
+                </div>
+                
+                <div id="addDocumentError" class="hidden text-sm text-red-600"></div>
+                <div id="addDocumentProgress" class="hidden">
+                    <div class="flex items-center gap-2 text-sm text-blue-600">
+                        <div class="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                        <span>Processing document...</span>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 justify-end">
+                    <button id="cancelAddDocBtn" class="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium">
+                        Cancel
+                    </button>
+                    <button id="saveDocumentBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium">
+                        Add Document
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/app.js"></script>
 </body>
 </html>
 

@@ -1,0 +1,101 @@
+{
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_0": {
+    "text": "Skip to content\n\n[ Follow **@fastapi** on **X (Twitter)** to stay updated ](https://x.com/fastapi)\n\n[ Follow **FastAPI** on **LinkedIn** to stay updated ](https://www.linkedin.com/company/fastapi)\n\n[ Subscribe to the **FastAPI and friends** newsletter 🎉 ](https://fastapi.tiangolo.com/newsletter/)\n\n[ sponsor ](https://blockbee.io?ref=fastapi \"BlockBee Cryptocurrency Payment Gateway\")\n\n[ sponsor ](https://github.com/scalar/scalar/?utm_source=fastapi&utm_medium=website&utm_campaign=top-banner \"Scalar: Beautiful Open-Source API References from Swagger/OpenAPI files\")\n\n[ sponsor ](https://www.propelauth.com/?utm_source=fastapi&utm_campaign=1223&utm_medium=topbanner \"Auth, user management and more for your B2B product\")\n\n[ sponsor ](https://zuplo.link/fastapi-web \"Zuplo: Scale, Protect, Document, and Monetize your FastAPI\")\n\n[ sponsor ](https://liblab.com?utm_source=fastapi \"liblab - Generate SDKs from FastAPI\")",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_0",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 0
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_1": {
+    "text": "[ sponsor ](https://zuplo.link/fastapi-web \"Zuplo: Scale, Protect, Document, and Monetize your FastAPI\")\n\n[ sponsor ](https://liblab.com?utm_source=fastapi \"liblab - Generate SDKs from FastAPI\")\n\n[ sponsor ](https://docs.render.com/deploy-fastapi?utm_source=deploydoc&utm_medium=referral&utm_campaign=fastapi \"Deploy & scale any full-stack web app on Render. Focus on building apps, not infra.\")\n\n[ sponsor ](https://www.coderabbit.ai/?utm_source=fastapi&utm_medium=banner&utm_campaign=fastapi \"Cut Code Review Time & Bugs in Half with CodeRabbit\")\n\n[ sponsor ](https://subtotal.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=open-source \"Making Retail Purchases Actionable for Brands and Developers\")\n\n[ sponsor ](https://docs.railway.com/guides/fastapi?utm_medium=integration&utm_source=docs&utm_campaign=fastapi \"Deploy enterprise applications at startup speed\")\n\n# Tutorial - User Guide¶\n\nThis tutorial shows you how to use **FastAPI** with most of its features, step by step.",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_1",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 1
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_2": {
+    "text": "# Tutorial - User Guide¶\n\nThis tutorial shows you how to use **FastAPI** with most of its features, step by step.\n\nEach section gradually builds on the previous ones, but it's structured to separate topics, so that you can go directly to any specific one to solve your specific API needs.\n\nIt is also built to work as a future reference so you can come back and see exactly what you need.\n\n## Run the code¶\n\nAll the code blocks can be copied and used directly (they are actually tested Python files).\n\nTo run any of the examples, copy the code to a file `main.py`, and start `fastapi dev` with:",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_2",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 2
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_3": {
+    "text": "All the code blocks can be copied and used directly (they are actually tested Python files).\n\nTo run any of the examples, copy the code to a file `main.py`, and start `fastapi dev` with:",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_3",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 3
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_4": {
+    "text": "$ <font color=\"#4E9A06\">fastapi</font> dev <u style=\"text-decoration-style:solid\">main.py</u> <span style=\"background-color:#009485\"><font color=\"#D3D7CF\"> FastAPI </font></span> Starting development server 🚀 Searching for package file structure from directories with <font color=\"#3465A4\">__init__.py</font> files Importing from <font color=\"#75507B\">/home/user/code/</font><font color=\"#AD7FA8\">awesomeapp</font> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> module </font></span> 🐍 main.py <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> code </font></span> Importing the FastAPI app object from the module with the following code: <u style=\"text-decoration-style:solid\">from </u><u style=\"text-decoration-style:solid\"><b>main</b></u><u style=\"text-decoration-style:solid\"> import </u><u style=\"text-decoration-style:solid\"><b>app</b></u> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> app </font></span> Using import string: <font",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_4",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 4
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_5": {
+    "text": "color=\"#3465A4\">main:app</font> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> server </font></span> Server started at <font color=\"#729FCF\"><u style=\"text-decoration-style:solid\">http://127.0.0.1:8000</u></font> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> server </font></span> Documentation at <font color=\"#729FCF\"><u style=\"text-decoration-style:solid\">http://127.0.0.1:8000/docs</u></font> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> tip </font></span> Running in development mode, for production use: <b>fastapi run</b> Logs: <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> INFO </font></span> Will watch for changes in these directories: <b>[</b><font color=\"#4E9A06\">&apos;/home/user/code/awesomeapp&apos;</font><b>]</b> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> INFO </font></span> Uvicorn running on <font color=\"#729FCF\"><u style=\"text-decoration-style:solid\">http://127.0.0.1:8000</u></font>",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_5",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 5
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_6": {
+    "text": "<b>(</b>Press CTRL+C to quit<b>)</b> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> INFO </font></span> Started reloader process <b>[</b><font color=\"#34E2E2\"><b>383138</b></font><b>]</b> using WatchFiles <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> INFO </font></span> Started server process <b>[</b><font color=\"#34E2E2\"><b>383153</b></font><b>]</b> <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> INFO </font></span> Waiting for application startup. <span style=\"background-color:#007166\"><font color=\"#D3D7CF\"> INFO </font></span> Application startup complete.\n\nIt is **HIGHLY encouraged** that you write or copy the code, edit it and run it locally.\n\nUsing it in your editor is what really shows you the benefits of FastAPI, seeing how little code you have to write, all the type checks, autocompletion, etc.\n\n* * *\n\n## Install FastAPI¶\n\nThe first step is to install FastAPI.",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_6",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 6
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_7": {
+    "text": "* * *\n\n## Install FastAPI¶\n\nThe first step is to install FastAPI.\n\nMake sure you create a [virtual environment](../virtual-environments/), activate it, and then **install FastAPI** :\n\n$ pip install \"fastapi[standard]\"\n \n ---> 100%\n\nNote\n\nWhen you install with `pip install \"fastapi[standard]\"` it comes with some default optional standard dependencies, including `fastapi-cloud-cli`, which allows you to deploy to [FastAPI Cloud](https://fastapicloud.com).\n\nIf you don't want to have those optional dependencies, you can instead install `pip install fastapi`.\n\nIf you want to install the standard dependencies but without the `fastapi-cloud-cli`, you can install with `pip install \"fastapi[standard-no-fastapi-cloud-cli]\"`.\n\n## Advanced User Guide¶\n\nThere is also an **Advanced User Guide** that you can read later after this **Tutorial - User guide**.\n\nThe **Advanced User Guide** builds on this one, uses the same concepts, and teaches you some extra features.",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_7",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 7
+  },
+  "192c9893-e515-4ce2-85a1-8fc0e0bee35e_8": {
+    "text": "The **Advanced User Guide** builds on this one, uses the same concepts, and teaches you some extra features.\n\nBut you should first read the **Tutorial - User Guide** (what you are reading right now).\n\nIt's designed so that you can build a complete application with just the **Tutorial - User Guide** , and then extend it in different ways, depending on your needs, using some of the additional ideas from the **Advanced User Guide**.\n\nBack to top",
+    "metadata": {
+      "title": "Tutorial - User Guide - FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "label": "FASTapi"
+    },
+    "chunk_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e_8",
+    "document_id": "192c9893-e515-4ce2-85a1-8fc0e0bee35e",
+    "embedding_index": 8
+  }
+}
